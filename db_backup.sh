@@ -54,21 +54,28 @@ BKP_FILE="backup-$NOW.tar.gz"
 DROPBOX_UPLOADER=~/DropboxBackup/dropbox_uploader.sh
 LOG_FILE=~/backup.log
 
+# Define a date function for adding a timestamp to the log file
+adddate() {
+    while IFS= read -r line; do
+        echo "$(date) $line"
+    done
+}
+
 start=$SECONDS
 cd ~
 # Create temp directory if it doesnt exist
 mkdir -p $TMP_DIR
 cd $TMP_DIR
-echo "Backing up the $dbName MySQL database to $SQL_FILE file, please wait..." >> $LOG_FILE
+echo "Backing up the $dbName MySQL database to $SQL_FILE file, please wait..." | adddate >> $LOG_FILE
 mysqldump --user=$dbUser --password=$dbPass --host=$dbHost --databases $dbName > $SQL_FILE
 tar -zcf "$BKP_FILE" $SQL_FILE
 
 #echo "Backing up the directories $BKP_DIRS"
 #tar -zcf "$BKP_FILE" $BKP_DIRS $SQL_FILE
 
-echo "Uploading to Dropbox..." >> $LOG_FILE
-$DROPBOX_UPLOADER -f ~/.dropbox_uploader upload $BKP_FILE "/MySQL_Backups/$BKP_FILE" >> $LOG_FILE
+echo "Uploading to Dropbox..." | adddate >> $LOG_FILE
+$DROPBOX_UPLOADER -f ~/.dropbox_uploader upload $BKP_FILE "/MySQL_Backups/$BKP_FILE" | adddate >> $LOG_FILE
 
 rm -fr $BKP_FILE $SQL_FILE
 duration=$(( SECONDS - start ))
-echo "Backup complete! Finished in $duration seconds!" >> $LOG_FILE
+echo "Backup complete! Finished in $duration seconds!" | adddate >> $LOG_FILE
