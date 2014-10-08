@@ -1,3 +1,57 @@
+# Dropbox Backup
+
+`Dropbox Backup` is a **BASH** script for backing up your MySQL databases with [Dropbox Uploader](https://github.com/andreafabrizi/Dropbox-Uploader/).
+
+## Setup
+
+1. First clone this repo:
+```bash
+$ cd ~
+$ git clone https://github.com/CubicApps/DropboxBackup.git
+```
+
+2. Give both the `Dropbox Backup` and `Dropbox Uploader` scripts execution permissions:
+```bash
+$ cd DropBoxBackup
+$ chmod +x dropbox_uploader.sh
+$ chmod +x db_backup.sh
+```
+
+3. Run the `dropbox_uploader.sh` script and follow the on-screen instructions to connect it to your Dropbox account:
+```bash
+$ ./dropbox_uploader.sh
+```
+
+## Usage
+
+The `Dropbox Backup` syntax is:
+
+```bash
+$ ~/DropboxBackup/db_backup.sh -u dbUsername -p dbPassword -h dbHost -d dbName
+```
+
+This script will create a MySQL dump file, which is then compressed into a `.tar.gz` file and then uploaded to your dropbox folder.
+
+## Backup Log File
+
+Every time the `db_backup.sh` script is executed, entries are added to `~/tmp/backup.log`. This log file can be backed up to dropbox by doing the following:
+
+```bash
+$ cd ~/tmp
+$ BKP_LOG_FILE="log-backup-$(date +"%Y-%m-%d_%H-%M-%S").tar.gz"
+$ tar -zcf "$BKP_LOG_FILE" "backup.log"
+$ ~/DropboxBackup/dropbox_uploader.sh -f ~/.dropbox_uploader upload $BKP_LOG_FILE "/Log_Backups/$BKP_LOG_FILE"
+$ rm $BKP_LOG_FILE
+```
+
+The above commands perform the following:
+
+1. Change to the `tmp` directory.
+2. Create a new name for the backup.
+3. Compress the existing log file into a `.tar.gz`.
+4. Upload the compressed file to dropbox.
+5. Delete the archive.
+
 # Dropbox Uploader
 
 Dropbox Uploader is a **BASH** script which can be used to upload, download, delete, list files (and more!) from **Dropbox**, an online file sharing, synchronization and backup service. 
