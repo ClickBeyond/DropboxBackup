@@ -61,12 +61,12 @@ adddate() {
     done
 }
 
+echo "Starting backup of the '$dbName' MySQL database to $SQL_FILE" | adddate >> $LOG_FILE
 start=$SECONDS
 cd ~
 # Create temp directory if it doesnt exist
 mkdir -p $TMP_DIR
 cd $TMP_DIR
-echo "Backing up the $dbName MySQL database to $SQL_FILE file, please wait..." | adddate >> $LOG_FILE
 mysqldump --user=$dbUser --password=$dbPass --host=$dbHost --databases $dbName > $SQL_FILE
 tar -zcf "$BKP_FILE" $SQL_FILE
 
