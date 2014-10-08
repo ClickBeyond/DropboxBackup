@@ -53,7 +53,7 @@ echo "Backing up the $dbName MySQL database to $_file file, please wait..."
 start=$SECONDS
 cd ~
 mysqldump --user=$dbUser --password=$dbPass --host=$dbHost --databases $dbName | gzip >$_file
-./dropbox_uploader.sh -q -f ~/.dropbox_uploader upload $_file "/MySQL_Backups/$_file" 
+./DropboxBackup/dropbox_uploader.sh -q -f ~/.dropbox_uploader upload $_file "/MySQL_Backups/$_file" 
 rm $_file
 duration=$(( SECONDS - start ))
 echo "Backup successfully completed in $duration seconds!"
