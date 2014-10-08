@@ -14,7 +14,7 @@
 # 2. $ chmod +x db_backup.sh
 # 3. $ ./dropbox_uploader.sh
 # The last step will configure access to your dropbox account if this is the first time you
-# have run this command.
+# have run dropbox_uploader.sh.
 #
 # Based on: http://robinadr.com/2013/10/automated-database-backups-to-dropbox
 ##########################################################################################################
@@ -46,14 +46,29 @@ if [ -z "${dbUser}" ] || [ -z "${dbPass}" ] || [ -z "${dbHost}" ] || [ -z "${dbN
     usage
 fi
 
-NOW=$(date +"%Y-%m-%d-%H-%M-%S")
-_file="backup-$dbName-$NOW.sql.gz"
+TMP_DIR="tmp"
+NOW=$(date +"%Y-%m-%d_%H-%M-%S")
+SQL_FILE="backup-$dbName-$NOW.sql"
+BKP_FILE="backup-$NOW.tar.gz"
+#BKP_DIRS="./dir/to/backup"
+DROPBOX_UPLOADER=~/DropboxBackup/dropbox_uploader.sh
+LOG_FILE=~/backup.log
 
-echo "Backing up the $dbName MySQL database to $_file file, please wait..."
 start=$SECONDS
 cd ~
-mysqldump --user=$dbUser --password=$dbPass --host=$dbHost --databases $dbName | gzip >$_file
-./DropboxBackup/dropbox_uploader.sh -q -f ~/.dropbox_uploader upload $_file "/MySQL_Backups/$_file" 
-rm $_file
+# Create temp directory if it doesnt exist
+mkdir -p $TMP_DIR
+cd $TMP_DIR
+echo "Backing up the $dbName MySQL database to $SQL_FILE file, please wait..." >> $LOG_FILE
+mysqldump --user=$dbUser --password=$dbPass --host=$dbHost --databases $dbName > $SQL_FILE
+tar -zcf "$BKP_FILE" $SQL_FILE
+
+#echo "Backing up the directories $BKP_DIRS"
+#tar -zcf "$BKP_FILE" $BKP_DIRS $SQL_FILE
+
+echo "Uploading to Dropbox..." >> $LOG_FILE
+$DROPBOX_UPLOADER -f ~/.dropbox_uploader upload $BKP_FILE "/MySQL_Backups/$BKP_FILE" >> $LOG_FILE
+
+rm -fr $BKP_FILE $SQL_FILE
 duration=$(( SECONDS - start ))
-echo "Backup successfully completed in $duration seconds!"
+echo "Backup complete! Finished in $duration seconds!" >> $LOG_FILE
