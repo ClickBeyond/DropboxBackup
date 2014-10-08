@@ -1,6 +1,6 @@
 # Dropbox Backup
 
-`Dropbox Backup` is a **BASH** script for backing up your MySQL databases with [Dropbox Uploader](https://github.com/andreafabrizi/Dropbox-Uploader/).
+`Dropbox Backup` is a collection of **BASH** scripts for backing up your MySQL databases with [Dropbox Uploader](https://github.com/andreafabrizi/Dropbox-Uploader/).
 
 ## Setup
 
@@ -10,14 +10,15 @@ $ cd ~
 $ git clone https://github.com/CubicApps/DropboxBackup.git
 ```
 
-2. Give both the `Dropbox Backup` and `Dropbox Uploader` scripts execution permissions:
+2. Then give the scripts execution permissions:
 ```bash
-$ cd DropBoxBackup
+$ cd ~/DropBoxBackup
 $ chmod +x dropbox_uploader.sh
 $ chmod +x db_backup.sh
+$ chmod +x log_backup.sh
 ```
 
-3. Run the `dropbox_uploader.sh` script and follow the on-screen instructions to connect it to your Dropbox account:
+3. Finally, run the `dropbox_uploader.sh` script and follow the on-screen instructions to connect it to your Dropbox account:
 ```bash
 $ ./dropbox_uploader.sh
 ```
@@ -34,8 +35,13 @@ This script will create a MySQL dump file, which is then compressed into a `.tar
 
 ## Backup Log File
 
-Every time the `db_backup.sh` script is executed, entries are added to `~/tmp/backup.log`. This log file can be backed up to dropbox by doing the following:
+Every time the `db_backup.sh` script is executed, entries are added to `~/tmp/backup.log`. This log file can be backed up to dropbox by executing the `./log_backup.sh` script as follows:
 
+```bash
+$ ~/DropboxBackup/log_backup.sh
+```
+
+Alternatively, the log file can be backed up manually by doing the following:
 ```bash
 $ cd ~/tmp
 $ BKP_LOG_FILE="log-backup-$(date +"%Y-%m-%d_%H-%M-%S").tar.gz"
