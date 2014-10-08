@@ -35,7 +35,7 @@ This script will create a MySQL dump file, which is then compressed into a `.tar
 
 ## Backup Log File
 
-Every time the `db_backup.sh` script is executed, entries are added to `~/tmp/backup.log`. This log file can be backed up to dropbox by executing the `./log_backup.sh` script as follows:
+Every time the `db_backup.sh` script is executed, entries are added to `~/tmp/backup.log`. This log file can be backed up to dropbox by executing the `log_backup.sh` script as follows:
 
 ```bash
 $ ~/DropboxBackup/log_backup.sh
