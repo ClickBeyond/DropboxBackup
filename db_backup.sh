@@ -52,7 +52,7 @@ SQL_FILE="backup-$dbName-$NOW.sql"
 BKP_FILE="backup-$NOW.tar.gz"
 #BKP_DIRS="./dir/to/backup"
 DROPBOX_UPLOADER=~/DropboxBackup/dropbox_uploader.sh
-LOG_FILE=~/backup.log
+LOG_FILE=~/$TMP_DIR/backup.log
 
 # Define a date function for adding a timestamp to the log file
 adddate() {
@@ -61,11 +61,11 @@ adddate() {
     done
 }
 
-echo "Starting backup of the '$dbName' MySQL database to '$SQL_FILE'" | adddate >> $LOG_FILE
-start=$SECONDS
 cd ~
 # Create temp directory if it doesnt exist
 mkdir -p $TMP_DIR
+echo "Starting backup of the '$dbName' MySQL database to '$SQL_FILE'" | adddate >> $LOG_FILE
+start=$SECONDS
 cd $TMP_DIR
 mysqldump --user=$dbUser --password=$dbPass --host=$dbHost --databases $dbName > $SQL_FILE
 tar -zcf "$BKP_FILE" $SQL_FILE
