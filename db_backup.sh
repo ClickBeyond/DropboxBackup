@@ -61,7 +61,7 @@ adddate() {
     done
 }
 
-echo "Starting backup of the '$dbName' MySQL database to $SQL_FILE" | adddate >> $LOG_FILE
+echo "Starting backup of the '$dbName' MySQL database to '$SQL_FILE'" | adddate >> $LOG_FILE
 start=$SECONDS
 cd ~
 # Create temp directory if it doesnt exist
