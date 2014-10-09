@@ -161,7 +161,7 @@ Print some info about your Dropbox account
 Unlink the script from your Dropbox account
 
 
-**Optional parameters:**  
+**Optional arguments passed before the command:**  
 * **-f &lt;FILENAME&gt;**  
 Load the configuration file from a specific file
 
@@ -185,7 +185,7 @@ Doesn't check for SSL certificates (insecure)
 ```bash
     ./dropbox_uploader.sh upload /etc/passwd /myfiles/passwd.old
     ./dropbox_uploader.sh upload *.zip /
-    ./dropbox_uploader.sh download /backup.zip
+    ./dropbox_uploader.sh -p download /backup.zip
     ./dropbox_uploader.sh delete /backup.zip
     ./dropbox_uploader.sh mkdir /myDir/
     ./dropbox_uploader.sh upload "My File.txt" "My File 2.txt"
