@@ -67,7 +67,7 @@ mkdir -p $TMP_DIR
 echo "Starting backup of the '$dbName' MySQL database to '$SQL_FILE'" | adddate >> $LOG_FILE
 start=$SECONDS
 cd $TMP_DIR
-mysqldump --user=$dbUser --password=$dbPass --host=$dbHost --databases $dbName > $SQL_FILE
+mysqldump -B --user=$dbUser --password=$dbPass --host=$dbHost $dbName > $SQL_FILE
 tar -zcf "$BKP_FILE" $SQL_FILE
 
 #echo "Backing up the directories $BKP_DIRS"
