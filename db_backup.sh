@@ -76,6 +76,6 @@ tar -zcf "$BKP_FILE" $SQL_FILE
 echo "Uploading to Dropbox..." | adddate >> $LOG_FILE
 $DROPBOX_UPLOADER -f ~/.dropbox_uploader upload $BKP_FILE "/MySQL_Backups/$BKP_FILE" | adddate >> $LOG_FILE
 
-rm -fr $BKP_FILE $SQL_FILE
+rm -f $BKP_FILE $SQL_FILE
 duration=$(( SECONDS - start ))
 echo "Backup complete! Finished in $duration seconds!" | adddate >> $LOG_FILE
