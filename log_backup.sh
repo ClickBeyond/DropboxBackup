@@ -21,6 +21,7 @@
 set -e
 
 TMP_DIR="tmp"
+DROP_DIR="Log_Backups"
 LOG_FILE=~/$TMP_DIR/backup.log
 
 if [ -f $LOG_FILE ];
@@ -30,7 +31,7 @@ then
 	cd ~/tmp
 	BKP_LOG_FILE="log-backup-$(date +"%Y-%m-%d_%H-%M-%S").tar.gz"
 	tar -zcf "$BKP_LOG_FILE" "backup.log"
-	~/DropboxBackup/dropbox_uploader.sh -f ~/.dropbox_uploader upload $BKP_LOG_FILE "/Log_Backups/$BKP_LOG_FILE"
+	~/DropboxBackup/dropbox_uploader.sh -f ~/.dropbox_uploader upload $BKP_LOG_FILE "/$DROP_DIR/$BKP_LOG_FILE"
 	rm -f $BKP_LOG_FILE
 	duration=$(( SECONDS - start ))
 	echo "Log backup complete! Finished in $duration seconds!"

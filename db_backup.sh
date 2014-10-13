@@ -50,6 +50,7 @@ if [ -z "${dbUser}" ] || [ -z "${dbPass}" ] || [ -z "${dbHost}" ] || [ -z "${dbN
 fi
 
 TMP_DIR="tmp"
+DROP_DIR="MySQL_Backups"
 NOW=$(date +"%Y-%m-%d_%H-%M-%S")
 SQL_FILE="backup-$dbName-$NOW.sql"
 BKP_FILE="backup-$NOW.tar.gz"
@@ -77,7 +78,7 @@ tar -zcf "$BKP_FILE" $SQL_FILE
 #tar -zcf "$BKP_FILE" $BKP_DIRS $SQL_FILE
 
 echo "Uploading to Dropbox..." | adddate >> $LOG_FILE
-$DROPBOX_UPLOADER -f ~/.dropbox_uploader upload $BKP_FILE "/MySQL_Backups/$BKP_FILE" | adddate >> $LOG_FILE
+$DROPBOX_UPLOADER -f ~/.dropbox_uploader upload $BKP_FILE "/$DROP_DIR/$BKP_FILE" | adddate >> $LOG_FILE
 
 rm -f $BKP_FILE $SQL_FILE
 duration=$(( SECONDS - start ))
