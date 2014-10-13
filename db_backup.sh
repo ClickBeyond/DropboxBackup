@@ -19,6 +19,9 @@
 # Based on: http://robinadr.com/2013/10/automated-database-backups-to-dropbox
 #############################################################################################
 
+# Exit immediately if an error occurs (a command exits with a non-zero status)
+set -e
+
 usage() { echo "Usage: $0 [-u <dbUsername>] [-p <dbPassword>] [-h <dbHost>] [-d <dbName>]" 1>&2; exit 1; }
 
 while getopts ":u:p:h:d:" o; do

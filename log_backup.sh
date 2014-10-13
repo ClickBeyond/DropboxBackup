@@ -17,6 +17,9 @@
 #
 ###################################################
 
+# Exit immediately if an error occurs (a command exits with a non-zero status)
+set -e
+
 TMP_DIR="tmp"
 LOG_FILE=~/$TMP_DIR/backup.log
 
