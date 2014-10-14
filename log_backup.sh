@@ -17,22 +17,38 @@
 #
 ###################################################
 
-# Exit immediately if an error occurs (a command exits with a non-zero status)
+# Exit immediately if an error occurs (i.e., a command exits with a non-zero status)
 set -e
 
 TMP_DIR="tmp"
 DROP_DIR="Log_Backups"
 LOG_FILE=~/$TMP_DIR/backup.log
+# Set the delete date to a multiple of the cron schedule e.g., a weekly cron schedule means data can only be deleted every 7, 14, 21, 28, etc, days
+DEL_DATE=$(date --date="-28 day" +%Y-%m-%d)
 
 if [ -f $LOG_FILE ];
 then
-	echo "Starting backup of 'backup.log' to dropbox..."
+	echo "Starting backup of 'backup.log' to Dropbox..."
 	start=$SECONDS
 	cd ~/tmp
 	BKP_LOG_FILE="log-backup-$(date +"%Y-%m-%d_%H-%M-%S").tar.gz"
 	tar -zcf "$BKP_LOG_FILE" "backup.log"
 	~/DropboxBackup/dropbox_uploader.sh -f ~/.dropbox_uploader upload $BKP_LOG_FILE "/$DROP_DIR/$BKP_LOG_FILE"
 	rm -f $BKP_LOG_FILE
+	
+	# Delete old backup from Dropbox
+	echo "Deleting from Dropbox any existing backup that was made on '$DEL_DATE'..."
+	while read -r state size file rest
+	do
+		if [[ $state = "[F]" && $file = "log-backup-"* ]]
+		then
+			if [[ $file = "log-backup-$DEL_DATE"* ]]
+			then
+				$DROPBOX_UPLOADER -f ~/.dropbox_uploader delete "/$DROP_DIR/$file"
+			fi
+		fi
+	done < <($DROPBOX_UPLOADER -f ~/.dropbox_uploader list $DROP_DIR/)
+	
 	duration=$(( SECONDS - start ))
 	echo "Log backup complete! Finished in $duration seconds!"
 else

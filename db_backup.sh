@@ -19,7 +19,7 @@
 # Based on: http://robinadr.com/2013/10/automated-database-backups-to-dropbox
 #############################################################################################
 
-# Exit immediately if an error occurs (a command exits with a non-zero status)
+# Exit immediately if an error occurs (i.e., a command exits with a non-zero status)
 set -e
 
 usage() { echo "Usage: $0 [-u <dbUsername>] [-p <dbPassword>] [-h <dbHost>] [-d <dbName>]" 1>&2; exit 1; }
@@ -57,6 +57,8 @@ BKP_FILE="backup-$dbName-$NOW.tar.gz"
 #BKP_DIRS="./dir/to/backup"
 DROPBOX_UPLOADER=~/DropboxBackup/dropbox_uploader.sh
 LOG_FILE=~/$TMP_DIR/backup.log
+# Set the delete date to a multiple of the cron schedule e.g., a weekly cron schedule means data can only be deleted every 7, 14, 21, 28, etc, days
+DEL_DATE=$(date --date="-28 day" +%Y-%m-%d)
 
 # Define a date function for adding a timestamp to the log file
 adddate() {
@@ -81,5 +83,19 @@ echo "Uploading to Dropbox..." | adddate >> $LOG_FILE
 $DROPBOX_UPLOADER -f ~/.dropbox_uploader upload $BKP_FILE "/$DROP_DIR/$BKP_FILE" | adddate >> $LOG_FILE
 
 rm -f $BKP_FILE $SQL_FILE
+
+# Delete old backup from Dropbox
+echo "Deleting from Dropbox any existing backup that was made on '$DEL_DATE'..." | adddate >> $LOG_FILE
+while read -r state size file rest
+do
+    if [[ $state = "[F]" && $file = "backup-$dbName-"* ]]
+    then
+        if [[ $file = "backup-$dbName-$DEL_DATE"* ]]
+        then
+			$DROPBOX_UPLOADER -f ~/.dropbox_uploader delete "/$DROP_DIR/$file" | adddate >> $LOG_FILE
+        fi
+    fi
+done < <($DROPBOX_UPLOADER -f ~/.dropbox_uploader list $DROP_DIR/)
+
 duration=$(( SECONDS - start ))
 echo "Backup complete! Finished in $duration seconds!" | adddate >> $LOG_FILE
