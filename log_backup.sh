@@ -23,6 +23,7 @@ set -e
 TMP_DIR="tmp"
 DROP_DIR="Log_Backups"
 LOG_FILE=~/$TMP_DIR/backup.log
+DROPBOX_UPLOADER=~/DropboxBackup/dropbox_uploader.sh
 # Set the delete date to a multiple of the cron schedule e.g., a weekly cron schedule means data can only be deleted every 7, 14, 21, 28, etc, days
 DEL_DATE=$(date --date="-28 day" +%Y-%m-%d)
 
@@ -33,7 +34,7 @@ then
 	cd ~/tmp
 	BKP_LOG_FILE="log-backup-$(date +"%Y-%m-%d_%H-%M-%S").tar.gz"
 	tar -zcf "$BKP_LOG_FILE" "backup.log"
-	~/DropboxBackup/dropbox_uploader.sh -f ~/.dropbox_uploader upload $BKP_LOG_FILE "/$DROP_DIR/$BKP_LOG_FILE"
+	$DROPBOX_UPLOADER -f ~/.dropbox_uploader upload $BKP_LOG_FILE "/$DROP_DIR/$BKP_LOG_FILE"
 	rm -f $BKP_LOG_FILE
 	
 	# Delete old backup from Dropbox
