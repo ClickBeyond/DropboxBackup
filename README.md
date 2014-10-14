@@ -58,6 +58,173 @@ The above commands perform the following:
 4. Upload the compressed file to dropbox.
 5. Delete the archive.
 
+## Scheduled Jobs (cron)
+
+Cron is used on Linux to schedule commands or scripts that need to be executed periodically.
+
+To edit your `crontab` file use:
+```bash
+$ crontab -e
+```
+
+Providing your system is setup to send emails (see [Sending Email using Zoho](#6)), then add these lines to your `crontab` file to email errors to the `MAILTO` address:
+```
+MAILTO="<your@email.com>"
+@daily ~/DropboxBackup/db_backup.sh -u dbUsername -p dbPassword -h dbHost -d dbName > /dev/null
+@weekly ~/DropboxBackup/log_backup.sh > /dev/null
+```
+
+To list the cron history use:
+```bash
+$ grep CRON /var/log/syslog
+```
+
+### Crontab Syntax
+
+The syntax for adding a new cron job is:
+```
+1 2 3 4 5 /path/to/command arg1 arg2
+```
+
+Where:
+
+1. = Minute (0-59)
+2. = Hours (0-23)
+3. = Day (0-31)
+4. = Month (0-12 [12 == December])
+5. = Day of the week (0-7 [7 or 0 == sunday])
+
+The syntax can also be expressed as this:
+
+```
+* * * * * command to be executed
+- - - - -
+| | | | |
+| | | | ----- Day of week (0 - 7) (Sunday == 0 or 7)
+| | | ------- Month (1 - 12)
+| | --------- Day of month (1 - 31)
+| ----------- Hour (0 - 23)
+------------- Minute (0 - 59)
+```
+
+Alternatively, a special string can be used to specify the first five fields:
+```
+Special string    Meaning
+@reboot           Run once, at start-up
+@yearly           Run once a year, "0 0 1 1 *"
+@annually         (same as @yearly)
+@monthly          Run once a month, "0 0 1 * *"
+@weekly           Run once a week, "0 0 * * 0"
+@daily            Run once a day, "0 0 * * *"
+@midnight         (same as @daily)
+@hourly           Run once an hour, "0 * * * *"
+```
+
+## Sending Email using Zoho
+
+Linux can be configured to send email through zoho by first creating an SSL tunnel to zoho and then configuring [Postfix](http://www.postfix.org/).
+
+Refs: [setup-postfix-zoho-mail-ubuntu](http://www.code2control.com/2013/12/setup-postfix-zoho-mail-ubuntu/) and [postfix-smtp-debian7](https://www.linode.com/docs/email/postfix/postfix-smtp-debian7)
+
+### Part 1: Creating an SSL Tunnel
+
+Install `stunnel`:
+```bash
+$ sudo apt-get install -y stunnel
+```
+
+Manually enable SSL tunnels:
+```bash
+$ sudo nano /etc/default/stunnel4
+# Change ENABLED to 1 to enable stunnel automatic startup
+ENABLED=1
+```
+
+Create a new stunnel configuration file and enter the following connection details:
+```bash
+$ sudo nano /etc/stunnel/stunnel.conf
+# Enter the following config
+[smtp-tls-wrapper]
+accept=11125
+client=yes
+connect = smtp.zoho.com:465
+```
+
+Restart the `stunnel4` service:
+```bash
+$ sudo service stunnel4 restart
+Restarting SSL tunnels: [Started: /etc/stunnel/stunnel.conf] stunnel
+```
+
+To test the SSL tunnel we can use telnet:
+```bash
+$ telnet localhost 11125
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+220 mx.zohomail.com SMTP Server ready October 10, 2014 1:33:11 PM PDT
+```
+
+If you see `220 mx.zohomail.com SMTP Server ready` on your console, your SSL tunnel is ready for Postfix!
+
+### Part 2: Configuring Postfix
+
+Install Postfix and asso:
+```bash
+$ sudo apt-get install -y postfix mailutils libsasl2-2 ca-certificates libsasl2-modules
+```
+
+During the Postfix setup select `Internet with smarthost`. Enter your fully qualified domain name e.g., `example.com` and the SMTP relay host `[127.0.0.1]:11125`.
+
+Then open the Postfix configuration file and change/append any lines that don't exist:
+```bash
+$ sudo nano /etc/postfix/main.cf
+# Make sure these settings exist (append any that don't):
+myhostname = <your-machine-name>
+mydestination = zoho.com, localhost.localdomain, localhost
+relayhost = [127.0.0.1]:11125
+smtp_sasl_auth_enable = yes
+smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+smtp_sasl_security_options = noanonymous
+#smtp_tls_CAfile = /etc/postfix/cacert.pem
+smtp_use_tls = yes
+```
+
+Create an SMTP username and password file:
+```bash
+$ sudo nano /etc/postfix/sasl_passwd
+# Add your Zoho mail domain, username and password
+[127.0.0.1]:11125       YOUR_USERNAME@YOUR_DOMAIN.com:YOUR_PASSWORD
+```
+
+Create the hash db file for Postfix and lock down access to it:
+```bash
+$ sudo postmap /etc/postfix/sasl_passwd
+$ sudo chown root:root /etc/postfix/sasl_passwd /etc/postfix/sasl_passwd.db
+$ sudo chmod 0600 /etc/postfix/sasl_passwd /etc/postfix/sasl_passwd.db
+```
+
+Restart the Postfix service:
+```bash
+$ sudo service postfix restart
+```
+
+Finally, the sending of email through Zoho can be tested:
+```bash
+$ sudo apt-get install -y mailutils
+$ echo "Test Email." | mail -s "Hello" -a "FROM:YOUR_USERNAME@YOUR_DOMAIN.com" TO_USERNAME@TO_DOMAIN.com
+```
+
+Check the mail log to make sure that the email has been sent properly:
+```bash
+$ cat /var/log/mail.log
+# Try and find this line at the end of the file:
+status=sent (250 Message received)
+```
+
+> Note: The Zoho email server strictly checks the SMTP from address. So make sure that the `From address` is the same as that in `/etc/postfix/sasl_passwd`. It must also be a valid Zoho email account.
+
+
 # Dropbox Uploader
 
 Dropbox Uploader is a **BASH** script which can be used to upload, download, delete, list files (and more!) from **Dropbox**, an online file sharing, synchronization and backup service. 
