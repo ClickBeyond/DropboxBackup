@@ -1,4 +1,12 @@
-# CHANGELOG
+# CHANGELOG Dropbox Backup
+
+## v1.0 [14-Oct-2014]
+* [NEW] Added a MySQL backup script `db_backup.sh`
+* [NEW] Added a log file backup script `log_backup.sh`
+* [NEW] Automatically delete old backups from Dropbox
+
+
+# CHANGELOG Dropbox-Uploader
 
 ## Version 0.14 - 15 Jul 2014
 * Fix issue #112, replaced bash condition -f with -e
