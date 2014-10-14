@@ -1,6 +1,6 @@
 # Dropbox Backup
 
-`Dropbox Backup` is a collection of **BASH** scripts for backing up your MySQL databases with [Dropbox Uploader](https://github.com/andreafabrizi/Dropbox-Uploader/).
+`Dropbox Backup` is a collection of **BASH** scripts for backing up your server with [Dropbox Uploader](https://github.com/andreafabrizi/Dropbox-Uploader/).
 
 ## Setup
 
@@ -10,7 +10,7 @@ $ cd ~
 $ git clone https://github.com/CubicApps/DropboxBackup.git
 ```
 
-2. Then give the scripts execution permissions:
+2. Then give the scripts execution permissions if they don't already have them:
 ```bash
 $ cd ~/DropBoxBackup
 $ chmod +x dropbox_uploader.sh
@@ -25,7 +25,7 @@ $ ./dropbox_uploader.sh
 
 ## Usage
 
-The `Dropbox Backup` syntax is:
+The `Dropbox Backup` syntax for backing up MySQL databases is:
 
 ```bash
 $ ~/DropboxBackup/db_backup.sh -u dbUsername -p dbPassword -h dbHost -d dbName
@@ -47,7 +47,7 @@ $ cd ~/tmp
 $ BKP_LOG_FILE="log-backup-$(date +"%Y-%m-%d_%H-%M-%S").tar.gz"
 $ tar -zcf "$BKP_LOG_FILE" "backup.log"
 $ ~/DropboxBackup/dropbox_uploader.sh -f ~/.dropbox_uploader upload $BKP_LOG_FILE "/Log_Backups/$BKP_LOG_FILE"
-$ rm $BKP_LOG_FILE
+$ rm -f $BKP_LOG_FILE
 ```
 
 The above commands perform the following:
