@@ -92,6 +92,7 @@ do
     then
         if [[ $file = "backup-$dbName-$DEL_DATE"* ]]
         then
+			echo "Old backup file found! Deleting '$file'" | adddate >> $LOG_FILE
 			$DROPBOX_UPLOADER -f ~/.dropbox_uploader delete "/$DROP_DIR/$file" | adddate >> $LOG_FILE
         fi
     fi

@@ -44,6 +44,7 @@ then
 		then
 			if [[ $file = "log-backup-$DEL_DATE"* ]]
 			then
+				echo "Old backup file found! Deleting '$file'"
 				$DROPBOX_UPLOADER -f ~/.dropbox_uploader delete "/$DROP_DIR/$file"
 			fi
 		fi
