@@ -38,14 +38,14 @@ then
 	rm -f $BKP_LOG_FILE
 	
 	# Delete old backup from Dropbox
-	echo "Deleting from Dropbox any existing backup that was made on '$DEL_DATE'..."
+	echo "Finding any existing backup that was made on '$DEL_DATE'..."
 	while read -r state size file rest
 	do
 		if [[ $state = "[F]" && $file = "log-backup-"* ]]
 		then
 			if [[ $file = "log-backup-$DEL_DATE"* ]]
 			then
-				echo "Old backup file found! Deleting '$file'"
+				echo "Old backup found! Deleting '$file'"
 				$DROPBOX_UPLOADER -f ~/.dropbox_uploader delete "/$DROP_DIR/$file"
 			fi
 		fi
@@ -54,5 +54,5 @@ then
 	duration=$(( SECONDS - start ))
 	echo "Log backup complete! Finished in $duration seconds!"
 else
-	echo "File '$LOG_FILE' does not exist! Please run './db_backup.sh' before running this script."
+	echo "File '$LOG_FILE' does not exist! Please run './db_backup.sh' before running this script again."
 fi

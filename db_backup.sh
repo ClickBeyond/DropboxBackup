@@ -85,14 +85,14 @@ $DROPBOX_UPLOADER -f ~/.dropbox_uploader upload $BKP_FILE "/$DROP_DIR/$BKP_FILE"
 rm -f $BKP_FILE $SQL_FILE
 
 # Delete old backup from Dropbox
-echo "Deleting from Dropbox any existing backup that was made on '$DEL_DATE'..." | adddate >> $LOG_FILE
+echo "Finding any existing backup that was made on '$DEL_DATE'..." | adddate >> $LOG_FILE
 while read -r state size file rest
 do
     if [[ $state = "[F]" && $file = "backup-$dbName-"* ]]
     then
         if [[ $file = "backup-$dbName-$DEL_DATE"* ]]
         then
-			echo "Old backup file found! Deleting '$file'" | adddate >> $LOG_FILE
+			echo "Old backup found! Deleting '$file'" | adddate >> $LOG_FILE
 			$DROPBOX_UPLOADER -f ~/.dropbox_uploader delete "/$DROP_DIR/$file" | adddate >> $LOG_FILE
         fi
     fi
