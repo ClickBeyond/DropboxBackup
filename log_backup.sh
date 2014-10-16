@@ -31,7 +31,7 @@ if [ -f $LOG_FILE ];
 then
 	echo "Starting backup of 'backup.log' to Dropbox..."
 	start=$SECONDS
-	cd ~/tmp
+	cd ~/$TMP_DIR
 	BKP_LOG_FILE="log-backup-$(date +"%Y-%m-%d_%H-%M-%S").tar.gz"
 	tar -zcf "$BKP_LOG_FILE" "backup.log"
 	$DROPBOX_UPLOADER -f ~/.dropbox_uploader upload $BKP_LOG_FILE "/$DROP_DIR/$BKP_LOG_FILE"
