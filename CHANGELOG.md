@@ -1,5 +1,9 @@
 # CHANGELOG Dropbox Backup
 
+## v1.1 [16-Oct-2014]
+* [FIX] Hard coded temp directory in `log_backup.sh`.
+* [NEW] Added a `web_cron.sh` script to allow a web cron URL to be accessed and the output downloaded to a daily log file, which is automatically backed up to Dropbox.
+
 ## v1.0 [14-Oct-2014]
 * [NEW] Added a MySQL backup script `db_backup.sh`
 * [NEW] Added a log file backup script `log_backup.sh`
