@@ -51,6 +51,7 @@
 <span class="nv">$ </span>chmod +x dropbox_uploader.sh
 <span class="nv">$ </span>chmod +x db_backup.sh
 <span class="nv">$ </span>chmod +x log_backup.sh
+<span class="nv">$ </span>chmod +x web_cron.sh
 </pre></div>
 
 <p>3: Finally, run the <code>dropbox_uploader.sh</code> script and follow the on-screen instructions to connect it to your Dropbox account:</p>
@@ -59,9 +60,9 @@
 </pre></div>
 
 <h2>
-<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+<a name="mysql-db-backup-usage" class="anchor" href="#mysql-db-backup-usage"><span class="octicon octicon-link"></span></a>MySQL DB Backup Usage</h2>
 
-<p>The <code>Dropbox Backup</code> syntax for backing up MySQL databases is:</p>
+<p>The syntax for backing up MySQL databases is:</p>
 
 <div class="highlight highlight-bash"><pre><span class="nv">$ </span>~/DropboxBackup/db_backup.sh -u dbUsername -p dbPassword -h dbHost -d dbName
 </pre></div>
@@ -111,6 +112,10 @@
 @daily ~/DropboxBackup/db_backup.sh -u dbUsername -p dbPassword -h dbHost -d dbName &gt; /dev/null
 @weekly ~/DropboxBackup/log_backup.sh &gt; /dev/null
 </code></pre>
+
+<blockquote>
+<p>Note: To limit the space consumed on Dropbox, backups are automatically deleted after 28 days.</p>
+</blockquote>
 
 <p>To list the cron history use:</p>
 
@@ -218,6 +223,34 @@
 <span class="nv">status</span><span class="o">=</span>sent <span class="o">(</span><span class="m">250</span> 2.0.0 Ok<span class="o">)</span>
 </pre></div>
 
+<h2>
+<a name="web-cron-when-your-host-does-not-support-cron-tasks" class="anchor" href="#web-cron-when-your-host-does-not-support-cron-tasks"><span class="octicon octicon-link"></span></a>Web Cron (When Your Host Does Not Support Cron Tasks)</h2>
+
+<p>It is not always possible to run <code>cron</code> or <code>scheduled tasks</code>, such as on shared hosting or when using particular server configurations. In these situations, web applications often provide a <code>web cron</code> URL, which a host can automatically visit at a scheduled time to perform the same functions as a local cron job. The <code>web_cron.sh</code> script has been created to allow a <code>web cron</code> URL to be visited and the output downloaded to a daily log file, which is automatically backed up to Dropbox.</p>
+
+<h3>
+<a name="web-cron-usage" class="anchor" href="#web-cron-usage"><span class="octicon octicon-link"></span></a>Web Cron Usage</h3>
+
+<p>The syntax for running a web cron task is:</p>
+
+<div class="highlight highlight-bash"><pre><span class="nv">$ </span>~/DropboxBackup/web_cron.sh -u URL -f FILENAME
+</pre></div>
+
+<blockquote>
+<p>Note: <code>FILENAME</code> will automatically have the <code>.log</code> extension appended to it i.e., <code>archive</code> will become <code>archive.log</code>.</p>
+</blockquote>
+
+<p>This script will visit the <code>URL</code> and download the output to a single daily log file <code>FILENAME-YEAR-MONTH-DAY.log</code>. Any previous days log file is compressed into a <code>.tar.gz</code> file and uploaded to Dropbox.</p>
+
+<p>The web cron script can be executed regularly on a machine that does have cron capabilities. For example, to execute the script every hour at five minutes past the hour, add the following to your <code>crontab</code> file:</p>
+
+<pre><code>5 * * * * ~/DropboxBackup/web_cron.sh -u URL -f FILENAME &gt; /dev/null
+</code></pre>
+
+<blockquote>
+<p>Note: To limit the space consumed on Dropbox, backups are automatically deleted after 28 days.</p>
+</blockquote>
+
 <h1>
 <a name="dropbox-uploader" class="anchor" href="#dropbox-uploader"><span class="octicon octicon-link"></span></a>Dropbox Uploader</h1>
 
@@ -279,7 +312,7 @@
 <p>The configuration wizard is pretty self-explanatory. One thing to notice is that if you choose "App permission", your uploads will end up on Dropbox under an <code>App/&lt;your_app_name&gt;</code> folder. To have them stored in another folder, such as in <code>/dir/</code>, you'll need to give Dropbox-Uploader permission to all Dropbox files.</p>
 
 <h2>
-<a name="usage-1" class="anchor" href="#usage-1"><span class="octicon octicon-link"></span></a>Usage</h2>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
 
 <p>The syntax is quite simple:</p>
 
