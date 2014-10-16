@@ -16,6 +16,7 @@ $ cd ~/DropBoxBackup
 $ chmod +x dropbox_uploader.sh
 $ chmod +x db_backup.sh
 $ chmod +x log_backup.sh
+$ chmod +x web_cron.sh
 ```
 
 3. Finally, run the `dropbox_uploader.sh` script and follow the on-screen instructions to connect it to your Dropbox account:
@@ -23,9 +24,9 @@ $ chmod +x log_backup.sh
 $ ./dropbox_uploader.sh
 ```
 
-## Usage
+## MySQL DB Backup Usage
 
-The `Dropbox Backup` syntax for backing up MySQL databases is:
+The syntax for backing up MySQL databases is:
 
 ```bash
 $ ~/DropboxBackup/db_backup.sh -u dbUsername -p dbPassword -h dbHost -d dbName
@@ -73,6 +74,8 @@ MAILTO="<your@email.com>"
 @daily ~/DropboxBackup/db_backup.sh -u dbUsername -p dbPassword -h dbHost -d dbName > /dev/null
 @weekly ~/DropboxBackup/log_backup.sh > /dev/null
 ```
+
+> Note: To limit the space consumed on Dropbox, backups are automatically deleted after 28 days.
 
 To list the cron history use:
 ```bash
@@ -176,6 +179,28 @@ $ cat /var/log/mail.log
 status=sent (250 2.0.0 Ok)
 ```
 
+## Web Cron (When Your Host Does Not Support Cron Tasks)
+
+It is not always possible to run `cron` or `scheduled tasks`, such as on shared hosting or when using particular server configurations. In these situations, web applications often provide a `web cron` URL, which a host can automatically visit at a scheduled time to perform the same functions as a local cron job. The `web_cron.sh` script has been created to allow a `web cron` URL to be visited and the output downloaded to a daily log file, which is automatically backed up to Dropbox.
+
+### Web Cron Usage
+
+The syntax for running a web cron task is:
+
+```bash
+$ ~/DropboxBackup/web_cron.sh -u URL -f FILENAME
+```
+
+> Note: `FILENAME` will automatically have the `.log` extension appended to it i.e., `archive` will become `archive.log`.
+
+This script will visit the `URL` and download the output to a single daily log file `FILENAME-YEAR-MONTH-DAY.log`. Any previous days log file is compressed into a `.tar.gz` file and uploaded to Dropbox.
+
+The web cron script can be executed regularly on a machine that does have cron capabilities. For example, to execute the script every hour at five minutes past the hour, add the following to your `crontab` file:
+```
+5 * * * * ~/DropboxBackup/web_cron.sh -u URL -f FILENAME > /dev/null
+```
+
+> Note: To limit the space consumed on Dropbox, backups are automatically deleted after 28 days.
 
 # Dropbox Uploader
 
