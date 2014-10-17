@@ -56,6 +56,7 @@ SQL_FILE="backup-$dbName-$NOW.sql"
 BKP_FILE="backup-$dbName-$NOW.tar.gz"
 #BKP_DIRS="./dir/to/backup"
 DROPBOX_UPLOADER=~/DropboxBackup/dropbox_uploader.sh
+DROP_CONFIG=~/.dropbox_uploader
 LOG_FILE=~/$TMP_DIR/backup.log
 # Set the delete date to a multiple of the cron schedule e.g., a weekly cron schedule means data can only be deleted every 7, 14, 21, 28, etc, days
 DEL_DATE=$(date --date="-28 day" +%Y-%m-%d)
@@ -80,7 +81,7 @@ tar -zcf "$BKP_FILE" $SQL_FILE
 #tar -zcf "$BKP_FILE" $BKP_DIRS $SQL_FILE
 
 echo "Uploading to Dropbox..." | adddate >> $LOG_FILE
-$DROPBOX_UPLOADER -f ~/.dropbox_uploader upload $BKP_FILE "/$DROP_DIR/$BKP_FILE" | adddate >> $LOG_FILE
+$DROPBOX_UPLOADER -f $DROP_CONFIG upload $BKP_FILE "/$DROP_DIR/$BKP_FILE" | adddate >> $LOG_FILE
 
 rm -f $BKP_FILE $SQL_FILE
 
@@ -93,10 +94,10 @@ do
         if [[ $file = "backup-$dbName-$DEL_DATE"* ]]
         then
 			echo "Old backup found! Deleting '$file'" | adddate >> $LOG_FILE
-			$DROPBOX_UPLOADER -f ~/.dropbox_uploader delete "/$DROP_DIR/$file" | adddate >> $LOG_FILE
+			$DROPBOX_UPLOADER -f $DROP_CONFIG delete "/$DROP_DIR/$file" | adddate >> $LOG_FILE
         fi
     fi
-done < <($DROPBOX_UPLOADER -f ~/.dropbox_uploader list $DROP_DIR/)
+done < <($DROPBOX_UPLOADER -f $DROP_CONFIG list $DROP_DIR/)
 
 duration=$(( SECONDS - start ))
 echo "Backup complete! Finished in $duration seconds!" | adddate >> $LOG_FILE

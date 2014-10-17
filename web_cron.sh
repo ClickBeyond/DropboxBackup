@@ -59,6 +59,7 @@ echo "Archiving complete! Finished in $duration seconds!"
 # Backup the previous days archive to Dropbox if it exists
 DROP_DIR="Archive_Backups"
 DROPBOX_UPLOADER=~/DropboxBackup/dropbox_uploader.sh
+DROP_CONFIG=~/.dropbox_uploader
 BKP_DATE=$(date --date="-1 day" +%Y-%m-%d)
 PREV_DAY_LOG_FILE="$filename-$BKP_DATE.log"
 BKP_LOG_FILE="$filename-backup-$BKP_DATE.tar.gz"
@@ -72,7 +73,7 @@ then
 	start=$SECONDS
 	cd ~/$TMP_DIR
 	tar -zcf "$BKP_LOG_FILE" "$PREV_DAY_LOG_FILE"
-	$DROPBOX_UPLOADER -f ~/.dropbox_uploader upload $BKP_LOG_FILE "/$DROP_DIR/$BKP_LOG_FILE"
+	$DROPBOX_UPLOADER -f $DROP_CONFIG upload $BKP_LOG_FILE "/$DROP_DIR/$BKP_LOG_FILE"
 	echo "Deleting '$PREV_DAY_LOG_FILE' and '$BKP_LOG_FILE'"
 	rm -f $PREV_DAY_LOG_FILE $BKP_LOG_FILE
 	
@@ -85,10 +86,10 @@ then
 			if [[ $file = "$filename-backup-$DEL_DATE"* ]]
 			then
 				echo "Old backup found! Deleting '$file'"
-				$DROPBOX_UPLOADER -f ~/.dropbox_uploader delete "/$DROP_DIR/$file"
+				$DROPBOX_UPLOADER -f $DROP_CONFIG delete "/$DROP_DIR/$file"
 			fi
 		fi
-	done < <($DROPBOX_UPLOADER -f ~/.dropbox_uploader list $DROP_DIR/)
+	done < <($DROPBOX_UPLOADER -f $DROP_CONFIG list $DROP_DIR/)
 	
 	duration=$(( SECONDS - start ))
 	echo "Archive backup complete! Finished in $duration seconds!"
