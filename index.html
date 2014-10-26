@@ -110,7 +110,7 @@
 
 <pre><code>MAILTO="&lt;your@email.com&gt;"
 @daily ~/DropboxBackup/db_backup.sh -u dbUsername -p dbPassword -h dbHost -d dbName &gt; /dev/null
-@weekly ~/DropboxBackup/log_backup.sh &gt; /dev/null
+30 0 * * 1 ~/DropboxBackup/log_backup.sh &gt; /dev/null
 </code></pre>
 
 <blockquote>
