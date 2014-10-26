@@ -75,6 +75,8 @@ MAILTO="<your@email.com>"
 30 0 * * 1 ~/DropboxBackup/log_backup.sh > /dev/null
 ```
 
+This cron schedule will execute the `db_backup.sh` script every day at midnight and the `log_backup.sh` script every Monday at 00:30hrs.
+
 > Note: To limit the space consumed on Dropbox, backups are automatically deleted after 28 days.
 
 To list the cron history use:
