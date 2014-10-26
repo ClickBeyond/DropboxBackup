@@ -22,13 +22,13 @@ set -e
 
 TMP_DIR="tmp"
 DROP_DIR="Log_Backups"
-LOG_FILE=~/$TMP_DIR/backup.log
+LOG_FILE="backup.log"
 DROPBOX_UPLOADER=~/DropboxBackup/dropbox_uploader.sh
 DROP_CONFIG=~/.dropbox_uploader
 # Set the delete date to a multiple of the cron schedule e.g., a weekly cron schedule means data can only be deleted every 7, 14, 21, 28, etc, days
 DEL_DATE=$(date --date="-28 day" +%Y-%m-%d)
 
-if [ -f $LOG_FILE ];
+if [ -f ~/$TMP_DIR/$LOG_FILE ];
 then
 	echo "Starting backup of 'backup.log' to Dropbox..."
 	start=$SECONDS
@@ -55,5 +55,5 @@ then
 	duration=$(( SECONDS - start ))
 	echo "Log backup complete! Finished in $duration seconds!"
 else
-	echo "File '$LOG_FILE' does not exist! Please run './db_backup.sh' before running this script again."
+	echo "File '~/$TMP_DIR/$LOG_FILE' does not exist! Please run './db_backup.sh' before running this script again."
 fi
