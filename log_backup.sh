@@ -36,7 +36,7 @@ then
 	BKP_LOG_FILE="log-backup-$(date +"%Y-%m-%d_%H-%M-%S").tar.gz"
 	tar -zcf "$BKP_LOG_FILE" "backup.log"
 	$DROPBOX_UPLOADER -f $DROP_CONFIG upload $BKP_LOG_FILE "/$DROP_DIR/$BKP_LOG_FILE"
-	rm -f $BKP_LOG_FILE
+	rm -f $BKP_LOG_FILE $LOG_FILE
 	
 	# Delete old backup from Dropbox
 	echo "Finding any existing backup that was made on '$DEL_DATE'..."
