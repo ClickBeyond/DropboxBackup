@@ -72,7 +72,7 @@ Providing your system is setup to send emails (see [Sending Email using Mandrill
 ```
 MAILTO="<your@email.com>"
 @daily ~/DropboxBackup/db_backup.sh -u dbUsername -p dbPassword -h dbHost -d dbName > /dev/null
-@weekly ~/DropboxBackup/log_backup.sh > /dev/null
+30 0 * * 1 ~/DropboxBackup/log_backup.sh > /dev/null
 ```
 
 > Note: To limit the space consumed on Dropbox, backups are automatically deleted after 28 days.
