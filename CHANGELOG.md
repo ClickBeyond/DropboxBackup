@@ -1,5 +1,8 @@
 # CHANGELOG Dropbox Backup
 
+## v1.1.3 [29-Dec-2014]
+* [CHANGE] Merge upstream changes to `dropbox_uploader.sh`.
+
 ## v1.1.2 [26-Oct-2014]
 * [CHANGE] Modify the cron schedule for the log backup script to every Monday @ 00:30hrs.
 * [CHANGE] Delete the backup log file after being successfully stored in Dropbox.
