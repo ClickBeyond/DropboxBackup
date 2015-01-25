@@ -7,7 +7,7 @@
 # Website: https://github.com/CubicApps
 # Copyright 2014
 #
-# Usage: $ ./db_backup.sh -u dbUsername -p dbPassword -h dbHost -d dbName
+# Usage: $ ./db_backup.sh -l loginPathName -d dbName
 #
 # Before running this script for the first time make sure you execute the following commands:
 # 1. $ chmod +x dropbox_uploader.sh
@@ -22,18 +22,12 @@
 # Exit immediately if an error occurs (i.e., a command exits with a non-zero status)
 set -e
 
-usage() { echo "Usage: $0 [-u <dbUsername>] [-p <dbPassword>] [-h <dbHost>] [-d <dbName>]" 1>&2; exit 1; }
+usage() { echo "Usage: $0 [-l <loginPathName>] [-d <dbName>]" 1>&2; exit 1; }
 
-while getopts ":u:p:h:d:" o; do
+while getopts ":l:d:" o; do
     case "${o}" in
-        u)
-            dbUser=${OPTARG}
-            ;;
-        p)
-            dbPass=${OPTARG}
-            ;;
-		h)
-            dbHost=${OPTARG}
+        l)
+            dbLogin=${OPTARG}
             ;;
 		d)
             dbName=${OPTARG}
@@ -45,7 +39,7 @@ while getopts ":u:p:h:d:" o; do
 done
 shift $((OPTIND-1))
 
-if [ -z "${dbUser}" ] || [ -z "${dbPass}" ] || [ -z "${dbHost}" ] || [ -z "${dbName}" ]; then
+if [ -z "${dbLogin}" ] || [ -z "${dbName}" ]; then
     usage
 fi
 
@@ -74,7 +68,7 @@ mkdir -p $TMP_DIR
 echo "Starting backup of the '$dbName' MySQL database to '$SQL_FILE'" | adddate >> $LOG_FILE
 start=$SECONDS
 cd $TMP_DIR
-mysqldump -B --user=$dbUser --password=$dbPass --host=$dbHost $dbName > $SQL_FILE
+mysqldump --login-path=$dbLogin -B $dbName > $SQL_FILE
 tar -zcf "$BKP_FILE" $SQL_FILE
 
 #echo "Backing up the directories $BKP_DIRS"
