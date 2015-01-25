@@ -7,7 +7,7 @@
 1. First clone this repo:
 ```bash
 $ cd ~
-$ git clone https://github.com/CubicApps/DropboxBackup.git
+$ git clone https://github.com/ClickBeyond/DropboxBackup.git
 ```
 
 2. Then give the scripts execution permissions if they don't already have them:

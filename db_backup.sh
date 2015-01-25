@@ -3,9 +3,9 @@
 #############################################################################################
 # A script to backup your MySQL database to dropbox.
 #
-# Author: Dan @ CubicApps
-# Website: https://github.com/CubicApps
-# Copyright 2014
+# Author: Dan @ ClickBeyond
+# Website: http://clickbeyond.github.io/DropboxBackup/
+# Copyright 2015
 #
 # Usage: $ ./db_backup.sh -l loginPathName -d dbName
 #

@@ -4,9 +4,9 @@
 # A script to download and backup the output from a web 
 # cron URL.
 #
-# Author: Dan @ CubicApps
-# Website: https://github.com/CubicApps
-# Copyright 2014
+# Author: Dan @ ClickBeyond
+# Website: http://clickbeyond.github.io/DropboxBackup/
+# Copyright 2015
 #
 # Usage: $ ./web_cron.sh -u URL -f FILENAME
 #

@@ -3,9 +3,9 @@
 ###################################################
 # A script to backup your log file to dropbox.
 #
-# Author: Dan @ CubicApps
-# Website: https://github.com/CubicApps
-# Copyright 2014
+# Author: Dan @ ClickBeyond
+# Website: http://clickbeyond.github.io/DropboxBackup/
+# Copyright 2015
 #
 # Usage: $ ./log_backup.sh
 #
