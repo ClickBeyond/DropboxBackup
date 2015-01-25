@@ -1,5 +1,8 @@
 # CHANGELOG Dropbox Backup
 
+## v1.2 [25-Jan-2015]
+* [CHANGE] Use `mysql_config_editor` to store MySQL database login credentials in an encrypted format.
+
 ## v1.1.3 [29-Dec-2014]
 * [CHANGE] Merge upstream changes to `dropbox_uploader.sh`.
 
