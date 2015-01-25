@@ -16,14 +16,14 @@
     <!-- HEADER -->
     <div id="header_wrap" class="outer">
         <header class="inner">
-          <a id="forkme_banner" href="https://github.com/CubicApps/DropboxBackup">View on GitHub</a>
+          <a id="forkme_banner" href="https://github.com/ClickBeyond/DropboxBackup">View on GitHub</a>
 
           <h1 id="project_title">Dropbox Backup</h1>
           <h2 id="project_tagline">Dropbox Backup is a collection of BASH scripts for backing up your server with Dropbox Uploader.</h2>
 
             <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/CubicApps/DropboxBackup/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/CubicApps/DropboxBackup/tarball/master">Download this project as a tar.gz file</a>
+              <a class="zip_download_link" href="https://github.com/ClickBeyond/DropboxBackup/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/ClickBeyond/DropboxBackup/tarball/master">Download this project as a tar.gz file</a>
             </section>
         </header>
     </div>
@@ -32,59 +32,69 @@
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
         <h1>
-<a name="dropbox-backup" class="anchor" href="#dropbox-backup"><span class="octicon octicon-link"></span></a>Dropbox Backup</h1>
+<a id="dropbox-backup" class="anchor" href="#dropbox-backup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dropbox Backup</h1>
 
 <p><code>Dropbox Backup</code> is a collection of <strong>BASH</strong> scripts for backing up your server with <a href="https://github.com/andreafabrizi/Dropbox-Uploader/">Dropbox Uploader</a>.</p>
 
 <h2>
-<a name="setup" class="anchor" href="#setup"><span class="octicon octicon-link"></span></a>Setup</h2>
+<a id="setup" class="anchor" href="#setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Setup</h2>
 
 <p>1: First clone this repo:</p>
 
-<div class="highlight highlight-bash"><pre><span class="nv">$ </span><span class="nb">cd</span> ~
-<span class="nv">$ </span>git clone https://github.com/CubicApps/DropboxBackup.git
-</pre></div>
+<div class="highlight highlight-bash"><pre>$ <span class="pl-s3">cd</span> <span class="pl-k">~</span>
+$ git clone https://github.com/ClickBeyond/DropboxBackup.git</pre></div>
 
 <p>2: Then give the scripts execution permissions if they don't already have them:</p>
 
-<div class="highlight highlight-bash"><pre><span class="nv">$ </span><span class="nb">cd</span> ~/DropBoxBackup
-<span class="nv">$ </span>chmod +x dropbox_uploader.sh
-<span class="nv">$ </span>chmod +x db_backup.sh
-<span class="nv">$ </span>chmod +x log_backup.sh
-<span class="nv">$ </span>chmod +x web_cron.sh
-</pre></div>
+<div class="highlight highlight-bash"><pre>$ <span class="pl-s3">cd</span> <span class="pl-k">~</span>/DropBoxBackup
+$ chmod +x dropbox_uploader.sh
+$ chmod +x db_backup.sh
+$ chmod +x log_backup.sh
+$ chmod +x web_cron.sh</pre></div>
 
 <p>3: Finally, run the <code>dropbox_uploader.sh</code> script and follow the on-screen instructions to connect it to your Dropbox account:</p>
 
-<div class="highlight highlight-bash"><pre><span class="nv">$ </span>./dropbox_uploader.sh
-</pre></div>
+<div class="highlight highlight-bash"><pre>$ ./dropbox_uploader.sh</pre></div>
 
 <h2>
-<a name="mysql-db-backup-usage" class="anchor" href="#mysql-db-backup-usage"><span class="octicon octicon-link"></span></a>MySQL DB Backup Usage</h2>
+<a id="mysql-db-backup-usage" class="anchor" href="#mysql-db-backup-usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>MySQL DB Backup Usage</h2>
 
-<p>The syntax for backing up MySQL databases is:</p>
+<p>Make sure the MySQL Client is installed for your version of MySQL Server:</p>
 
-<div class="highlight highlight-bash"><pre><span class="nv">$ </span>~/DropboxBackup/db_backup.sh -u dbUsername -p dbPassword -h dbHost -d dbName
-</pre></div>
+<div class="highlight highlight-bash"><pre>$ sudo apt-get update
+$ sudo apt-get install mysql-client-5.6 <span class="pl-c"># replace 5.6 with your version of MySQL</span></pre></div>
+
+<p>Use the <code>mysql_config_editor</code> (new in v5.6.6) to store the database login credentials in an encrypted format:</p>
+
+<div class="highlight highlight-bash"><pre>$ mysql_config_editor <span class="pl-s3">set</span> --login-path=loginPathName --host=hostname --user=username --password</pre></div>
+
+<p>Replace <code>loginPathName</code> with a custom name and replace <code>hostname</code> and <code>username</code> with your login credentials. You will be prompted to enter your password.</p>
+
+<p>Some useful <code>mysql_config_editor</code> commands are:</p>
+
+<div class="highlight highlight-bash"><pre>$ mysql_config_editor print --all   <span class="pl-c"># to view the stored login credentials (passwords are displayed as *****)</span>
+$ mysql_config_editor remove --login-path=loginPathName <span class="pl-c"># to remove a stored login</span></pre></div>
+
+<p>The <code>loginPathName</code> name is used when backing up MySQL databases. The syntax is:</p>
+
+<div class="highlight highlight-bash"><pre>$ <span class="pl-k">~</span>/DropboxBackup/db_backup.sh -l loginPathName -d dbName</pre></div>
 
 <p>This script will create a MySQL dump file, which is then compressed into a <code>.tar.gz</code> file and then uploaded to your dropbox folder.</p>
 
 <h2>
-<a name="backup-log-file" class="anchor" href="#backup-log-file"><span class="octicon octicon-link"></span></a>Backup Log File</h2>
+<a id="backup-log-file" class="anchor" href="#backup-log-file" aria-hidden="true"><span class="octicon octicon-link"></span></a>Backup Log File</h2>
 
 <p>Every time the <code>db_backup.sh</code> script is executed, entries are added to <code>~/tmp/backup.log</code>. This log file can be backed up to dropbox by executing the <code>log_backup.sh</code> script as follows:</p>
 
-<div class="highlight highlight-bash"><pre><span class="nv">$ </span>~/DropboxBackup/log_backup.sh
-</pre></div>
+<div class="highlight highlight-bash"><pre>$ <span class="pl-k">~</span>/DropboxBackup/log_backup.sh</pre></div>
 
 <p>Alternatively, the log file can be backed up manually by doing the following:</p>
 
-<div class="highlight highlight-bash"><pre><span class="nv">$ </span><span class="nb">cd</span> ~/tmp
-<span class="nv">$ BKP_LOG_FILE</span><span class="o">=</span><span class="s2">"log-backup-$(date +"</span>%Y-%m-%d_%H-%M-%S<span class="s2">").tar.gz"</span>
-<span class="nv">$ </span>tar -zcf <span class="s2">"$BKP_LOG_FILE"</span> <span class="s2">"backup.log"</span>
-<span class="nv">$ </span>~/DropboxBackup/dropbox_uploader.sh -f ~/.dropbox_uploader upload <span class="nv">$BKP_LOG_FILE</span> <span class="s2">"/Log_Backups/$BKP_LOG_FILE"</span>
-<span class="nv">$ </span>rm -f <span class="nv">$BKP_LOG_FILE</span>
-</pre></div>
+<div class="highlight highlight-bash"><pre>$ <span class="pl-s3">cd</span> <span class="pl-k">~</span>/tmp
+$ BKP_LOG_FILE=<span class="pl-s1"><span class="pl-pds">"</span>log-backup-<span class="pl-s1"><span class="pl-pds">$(</span>date +<span class="pl-s1"><span class="pl-pds">"</span>%Y-%m-%d_%H-%M-%S<span class="pl-pds">"</span></span><span class="pl-pds">)</span></span>.tar.gz<span class="pl-pds">"</span></span>
+$ tar -zcf <span class="pl-s1"><span class="pl-pds">"</span><span class="pl-vo">$BKP_LOG_FILE</span><span class="pl-pds">"</span></span> <span class="pl-s1"><span class="pl-pds">"</span>backup.log<span class="pl-pds">"</span></span>
+$ <span class="pl-k">~</span>/DropboxBackup/dropbox_uploader.sh -f <span class="pl-k">~</span>/.dropbox_uploader upload <span class="pl-vo">$BKP_LOG_FILE</span> <span class="pl-s1"><span class="pl-pds">"</span>/Log_Backups/<span class="pl-vo">$BKP_LOG_FILE</span><span class="pl-pds">"</span></span>
+$ rm -f <span class="pl-vo">$BKP_LOG_FILE</span></pre></div>
 
 <p>The above commands perform the following:</p>
 
@@ -97,19 +107,18 @@
 </ol>
 
 <h2>
-<a name="scheduled-jobs-cron" class="anchor" href="#scheduled-jobs-cron"><span class="octicon octicon-link"></span></a>Scheduled Jobs (cron)</h2>
+<a id="scheduled-jobs-cron" class="anchor" href="#scheduled-jobs-cron" aria-hidden="true"><span class="octicon octicon-link"></span></a>Scheduled Jobs (cron)</h2>
 
 <p>Cron is used on Linux to schedule commands or scripts that need to be executed periodically.</p>
 
 <p>To edit your <code>crontab</code> file use:</p>
 
-<div class="highlight highlight-bash"><pre><span class="nv">$ </span>crontab -e
-</pre></div>
+<div class="highlight highlight-bash"><pre>$ crontab -e</pre></div>
 
 <p>Providing your system is setup to send emails (see <a href="#6">Sending Email using Mandrill</a>), then add these lines to your <code>crontab</code> file to email errors to the <code>MAILTO</code> address:</p>
 
 <pre><code>MAILTO="&lt;your@email.com&gt;"
-@daily ~/DropboxBackup/db_backup.sh -u dbUsername -p dbPassword -h dbHost -d dbName &gt; /dev/null
+@daily ~/DropboxBackup/db_backup.sh -l loginPathName -d dbName &gt; /dev/null
 30 0 * * 1 ~/DropboxBackup/log_backup.sh &gt; /dev/null
 </code></pre>
 
@@ -121,11 +130,10 @@
 
 <p>To list the cron history use:</p>
 
-<div class="highlight highlight-bash"><pre><span class="nv">$ </span>grep CRON /var/log/syslog
-</pre></div>
+<div class="highlight highlight-bash"><pre>$ grep CRON /var/log/syslog</pre></div>
 
 <h3>
-<a name="crontab-syntax" class="anchor" href="#crontab-syntax"><span class="octicon octicon-link"></span></a>Crontab Syntax</h3>
+<a id="crontab-syntax" class="anchor" href="#crontab-syntax" aria-hidden="true"><span class="octicon octicon-link"></span></a>Crontab Syntax</h3>
 
 <p>The syntax for adding a new cron job is:</p>
 
@@ -168,75 +176,67 @@
 </code></pre>
 
 <h2>
-<a name="sending-email-using-mandrill" class="anchor" href="#sending-email-using-mandrill"><span class="octicon octicon-link"></span></a>Sending Email using Mandrill</h2>
+<a id="sending-email-using-mandrill" class="anchor" href="#sending-email-using-mandrill" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sending Email using Mandrill</h2>
 
 <p>Linux can be configured to send email through <a href="https://mandrill.com/">Mandrill</a> using your SMTP &amp; API credentials. The information in this section is based on <a href="http://help.mandrill.com/entries/23060367-Can-I-configure-Postfix-to-send-through-Mandrill-">this article from Mandrill.com</a>.</p>
 
 <p>1: Install a SASL authentication package, <a href="http://www.postfix.org/">Postfix</a> and mail utilities:</p>
 
-<div class="highlight highlight-bash"><pre><span class="nv">$ </span>apt-get install -y libsasl2-modules postfix mailutils
-</pre></div>
+<div class="highlight highlight-bash"><pre>$ apt-get install -y libsasl2-modules postfix mailutils</pre></div>
 
 <pre><code>During the Postfix setup select `Internet with smarthost`. Enter your fully qualified domain name (`FQDN`) e.g., `example.com` and the SMTP relay host `[smtp.mandrillapp.com]`.
 </code></pre>
 
 <p>2: Then open the Postfix configuration file and change/append any lines that don't exist:</p>
 
-<div class="highlight highlight-bash"><pre><span class="nv">$ </span>sudo nano /etc/postfix/main.cf
-<span class="c"># Make sure these settings exist (append any that don't):</span>
-<span class="nv">myhostname</span> <span class="o">=</span> &lt;your-domain-name&gt; e.g., example.com
-<span class="nv">relayhost</span> <span class="o">=</span> <span class="o">[</span>smtp.mandrillapp.com<span class="o">]</span>
-<span class="c"># enable SASL authentication</span>
-<span class="nv">smtp_sasl_auth_enable</span> <span class="o">=</span> yes
-<span class="c"># tell Postfix where the credentials are stored</span>
-<span class="nv">smtp_sasl_password_maps</span> <span class="o">=</span> <span class="nb">hash</span>:/etc/postfix/sasl_passwd 
-<span class="nv">smtp_sasl_security_options</span> <span class="o">=</span> noanonymous
-<span class="c"># use STARTTLS for encryption</span>
-<span class="nv">smtp_use_tls</span> <span class="o">=</span> yes 
-</pre></div>
+<div class="highlight highlight-bash"><pre>$ sudo nano /etc/postfix/main.cf
+<span class="pl-c"># Make sure these settings exist (append any that don't):</span>
+myhostname = <span class="pl-k">&lt;</span>your-domain-name<span class="pl-k">&gt;</span> e.g., example.com
+relayhost = [smtp.mandrillapp.com]
+<span class="pl-c"># enable SASL authentication</span>
+smtp_sasl_auth_enable = yes
+<span class="pl-c"># tell Postfix where the credentials are stored</span>
+smtp_sasl_password_maps = <span class="pl-s3">hash</span>:/etc/postfix/sasl_passwd 
+smtp_sasl_security_options = noanonymous
+<span class="pl-c"># use STARTTLS for encryption</span>
+smtp_use_tls = yes </pre></div>
 
 <p>3: Create an SMTP username and password file:</p>
 
-<div class="highlight highlight-bash"><pre><span class="nv">$ </span>sudo nano /etc/postfix/sasl_passwd
-<span class="c"># Add your Mandrill username and API key</span>
-<span class="o">[</span>smtp.mandrillapp.com<span class="o">]</span> USERNAME:API_KEY
-</pre></div>
+<div class="highlight highlight-bash"><pre>$ sudo nano /etc/postfix/sasl_passwd
+<span class="pl-c"># Add your Mandrill username and API key</span>
+[smtp.mandrillapp.com] USERNAME:API_KEY</pre></div>
 
 <p>4: Create the hash db file for Postfix and lock down access to it:</p>
 
-<div class="highlight highlight-bash"><pre><span class="nv">$ </span>postmap /etc/postfix/sasl_passwd
-<span class="nv">$ </span>chmod <span class="m">0600</span> /etc/postfix/sasl_passwd /etc/postfix/sasl_passwd.db
-</pre></div>
+<div class="highlight highlight-bash"><pre>$ postmap /etc/postfix/sasl_passwd
+$ chmod 0600 /etc/postfix/sasl_passwd /etc/postfix/sasl_passwd.db</pre></div>
 
 <p>5: Restart the Postfix service:</p>
 
-<div class="highlight highlight-bash"><pre><span class="nv">$ </span>service postfix restart
-</pre></div>
+<div class="highlight highlight-bash"><pre>$ service postfix restart</pre></div>
 
 <p>6: Finally, test the sending of email through Mandrill:</p>
 
-<div class="highlight highlight-bash"><pre><span class="nv">$ </span><span class="nb">echo</span> <span class="s2">"Test Email."</span> <span class="p">|</span> mail -s <span class="s2">"Hello"</span> -a <span class="s2">"FROM:YOUR_USERNAME@YOUR_DOMAIN.com"</span> TO_USERNAME@TO_DOMAIN.com
-</pre></div>
+<div class="highlight highlight-bash"><pre>$ <span class="pl-s3">echo</span> <span class="pl-s1"><span class="pl-pds">"</span>Test Email.<span class="pl-pds">"</span></span> <span class="pl-k">|</span> mail -s <span class="pl-s1"><span class="pl-pds">"</span>Hello<span class="pl-pds">"</span></span> -a <span class="pl-s1"><span class="pl-pds">"</span>FROM:YOUR_USERNAME@YOUR_DOMAIN.com<span class="pl-pds">"</span></span> TO_USERNAME@TO_DOMAIN.com</pre></div>
 
 <p>7: Check the mail log to make sure that the email has been sent properly:</p>
 
-<div class="highlight highlight-bash"><pre><span class="nv">$ </span>cat /var/log/mail.log
-<span class="c"># Try and find this at the end of the file:</span>
-<span class="nv">status</span><span class="o">=</span>sent <span class="o">(</span><span class="m">250</span> 2.0.0 Ok<span class="o">)</span>
-</pre></div>
+<div class="highlight highlight-bash"><pre>$ cat /var/log/mail.log
+<span class="pl-c"># Try and find this at the end of the file:</span>
+status=sent (250 2.0.0 Ok)</pre></div>
 
 <h2>
-<a name="web-cron-when-your-host-does-not-support-cron-tasks" class="anchor" href="#web-cron-when-your-host-does-not-support-cron-tasks"><span class="octicon octicon-link"></span></a>Web Cron (When Your Host Does Not Support Cron Tasks)</h2>
+<a id="web-cron-when-your-host-does-not-support-cron-tasks" class="anchor" href="#web-cron-when-your-host-does-not-support-cron-tasks" aria-hidden="true"><span class="octicon octicon-link"></span></a>Web Cron (When Your Host Does Not Support Cron Tasks)</h2>
 
 <p>It is not always possible to run <code>cron</code> or <code>scheduled tasks</code>, such as on shared hosting or when using particular server configurations. In these situations, web applications often provide a <code>web cron</code> URL, which a host can automatically visit at a scheduled time to perform the same functions as a local cron job. The <code>web_cron.sh</code> script has been created to allow a <code>web cron</code> URL to be visited and the output downloaded to a daily log file, which is automatically backed up to Dropbox.</p>
 
 <h3>
-<a name="web-cron-usage" class="anchor" href="#web-cron-usage"><span class="octicon octicon-link"></span></a>Web Cron Usage</h3>
+<a id="web-cron-usage" class="anchor" href="#web-cron-usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Web Cron Usage</h3>
 
 <p>The syntax for running a web cron task is:</p>
 
-<div class="highlight highlight-bash"><pre><span class="nv">$ </span>~/DropboxBackup/web_cron.sh -u URL -f FILENAME
-</pre></div>
+<div class="highlight highlight-bash"><pre>$ <span class="pl-k">~</span>/DropboxBackup/web_cron.sh -u URL -f FILENAME</pre></div>
 
 <blockquote>
 <p>Note: <code>FILENAME</code> will automatically have the <code>.log</code> extension appended to it i.e., <code>archive</code> will become <code>archive.log</code>.</p>
@@ -254,7 +254,7 @@
 </blockquote>
 
 <h1>
-<a name="dropbox-uploader" class="anchor" href="#dropbox-uploader"><span class="octicon octicon-link"></span></a>Dropbox Uploader</h1>
+<a id="dropbox-uploader" class="anchor" href="#dropbox-uploader" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dropbox Uploader</h1>
 
 <p>Dropbox Uploader is a <strong>BASH</strong> script which can be used to upload, download, delete, list files (and more!) from <strong>Dropbox</strong>, an online file sharing, synchronization and backup service. </p>
 
@@ -272,7 +272,7 @@
 <p>Please refer to the &lt;Wiki&gt;(<a href="https://github.com/andreafabrizi/Dropbox-Uploader/wiki">https://github.com/andreafabrizi/Dropbox-Uploader/wiki</a>) for tips and additional information about this project. The Wiki is also the place where you can share your scripts and examples related to Dropbox Uploader.</p>
 
 <h2>
-<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features</h2>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h2>
 
 <ul>
 <li>Cross platform</li>
@@ -288,33 +288,30 @@
 </ul>
 
 <h2>
-<a name="getting-started" class="anchor" href="#getting-started"><span class="octicon octicon-link"></span></a>Getting started</h2>
+<a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting started</h2>
 
 <p>First, clone the repository using git (recommended):</p>
 
-<div class="highlight highlight-bash"><pre>git clone https://github.com/andreafabrizi/Dropbox-Uploader/
-</pre></div>
+<div class="highlight highlight-bash"><pre>git clone https://github.com/andreafabrizi/Dropbox-Uploader/</pre></div>
 
 <p>or download the script manually using this command:</p>
 
-<div class="highlight highlight-bash"><pre>curl <span class="s2">"https://raw.githubusercontent.com/andreafabrizi/Dropbox-Uploader/master/dropbox_uploader.sh"</span> -o dropbox_uploader.sh
-</pre></div>
+<div class="highlight highlight-bash"><pre>curl <span class="pl-s1"><span class="pl-pds">"</span>https://raw.githubusercontent.com/andreafabrizi/Dropbox-Uploader/master/dropbox_uploader.sh<span class="pl-pds">"</span></span> -o dropbox_uploader.sh</pre></div>
 
 <p>Then give the execution permission to the script and run it:</p>
 
-<div class="highlight highlight-bash"><pre> <span class="nv">$chmod</span> +x dropbox_uploader.sh
- <span class="nv">$.</span>/dropbox_uploader.sh
-</pre></div>
+<div class="highlight highlight-bash"><pre> <span class="pl-vo">$chmod</span> +x dropbox_uploader.sh
+ $./dropbox_uploader.sh</pre></div>
 
 <p>The first time you run <code>dropbox_uploader</code>, you'll be guided through a wizard in order to configure access to your Dropbox. This configuration will be stored in <code>~/.dropbox_uploader</code>.</p>
 
 <h3>
-<a name="configuration-wizard" class="anchor" href="#configuration-wizard"><span class="octicon octicon-link"></span></a>Configuration wizard</h3>
+<a id="configuration-wizard" class="anchor" href="#configuration-wizard" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configuration wizard</h3>
 
 <p>The configuration wizard is pretty self-explanatory. One thing to notice is that if you choose "App permission", your uploads will end up on Dropbox under an <code>App/&lt;your_app_name&gt;</code> folder. To have them stored in another folder, such as in <code>/dir/</code>, you'll need to give Dropbox-Uploader permission to all Dropbox files.</p>
 
 <h2>
-<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
 
 <p>The syntax is quite simple:</p>
 
@@ -375,17 +372,16 @@ Doesn't check for SSL certificates (insecure)</p></li>
 <p><strong>Examples:</strong></p>
 
 <div class="highlight highlight-bash"><pre>    ./dropbox_uploader.sh upload /etc/passwd /myfiles/passwd.old
-    ./dropbox_uploader.sh upload *.zip /
+    ./dropbox_uploader.sh upload <span class="pl-k">*</span>.zip /
     ./dropbox_uploader.sh -p download /backup.zip
     ./dropbox_uploader.sh delete /backup.zip
     ./dropbox_uploader.sh mkdir /myDir/
-    ./dropbox_uploader.sh upload <span class="s2">"My File.txt"</span> <span class="s2">"My File 2.txt"</span>
-    ./dropbox_uploader.sh share <span class="s2">"My File.txt"</span>
-    ./dropbox_uploader.sh list
-</pre></div>
+    ./dropbox_uploader.sh upload <span class="pl-s1"><span class="pl-pds">"</span>My File.txt<span class="pl-pds">"</span></span> <span class="pl-s1"><span class="pl-pds">"</span>My File 2.txt<span class="pl-pds">"</span></span>
+    ./dropbox_uploader.sh share <span class="pl-s1"><span class="pl-pds">"</span>My File.txt<span class="pl-pds">"</span></span>
+    ./dropbox_uploader.sh list</pre></div>
 
 <h2>
-<a name="tested-environments" class="anchor" href="#tested-environments"><span class="octicon octicon-link"></span></a>Tested Environments</h2>
+<a id="tested-environments" class="anchor" href="#tested-environments" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tested Environments</h2>
 
 <ul>
 <li>GNU Linux</li>
@@ -403,7 +399,7 @@ Doesn't check for SSL certificates (insecure)</p></li>
 <p>If you have successfully tested this script on others systems or platforms please let me know!</p>
 
 <h2>
-<a name="running-as-cron-job" class="anchor" href="#running-as-cron-job"><span class="octicon octicon-link"></span></a>Running as cron job</h2>
+<a id="running-as-cron-job" class="anchor" href="#running-as-cron-job" aria-hidden="true"><span class="octicon octicon-link"></span></a>Running as cron job</h2>
 
 <p>Dropbox Uploader relies on a different configuration file for each system user. The default configuration file location is HOME_DIRECTORY/.dropbox_uploader. This means that if you do the setup with your user and then you try to run a cron job as root, it won't works.<br>
 So, when running this script using cron, please keep in mind the following:</p>
@@ -415,38 +411,34 @@ So, when running this script using cron, please keep in mind the following:</p>
 </ul>
 
 <h2>
-<a name="how-to-setup-a-proxy" class="anchor" href="#how-to-setup-a-proxy"><span class="octicon octicon-link"></span></a>How to setup a proxy</h2>
+<a id="how-to-setup-a-proxy" class="anchor" href="#how-to-setup-a-proxy" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to setup a proxy</h2>
 
 <p>To use a proxy server, just set the <strong>https_proxy</strong> environment variable:</p>
 
 <p><strong>Linux:</strong></p>
 
-<div class="highlight highlight-bash"><pre>    <span class="nb">export </span><span class="nv">HTTP_PROXY_USER</span><span class="o">=</span>XXXX
-    <span class="nb">export </span><span class="nv">HTTP_PROXY_PASSWORD</span><span class="o">=</span>YYYY
-    <span class="nb">export </span><span class="nv">https_proxy</span><span class="o">=</span>http://192.168.0.1:8080
-</pre></div>
+<div class="highlight highlight-bash"><pre>    <span class="pl-s">export</span> HTTP_PROXY_USER=XXXX
+    <span class="pl-s">export</span> HTTP_PROXY_PASSWORD=YYYY
+    <span class="pl-s">export</span> https_proxy=http://192.168.0.1:8080</pre></div>
 
 <p><strong>BSD:</strong></p>
 
 <div class="highlight highlight-bash"><pre>    setenv HTTP_PROXY_USER XXXX
     setenv HTTP_PROXY_PASSWORD YYYY
-    setenv https_proxy http://192.168.0.1:8080
-</pre></div>
+    setenv https_proxy http://192.168.0.1:8080</pre></div>
 
 <h2>
-<a name="bash-and-curl-installation" class="anchor" href="#bash-and-curl-installation"><span class="octicon octicon-link"></span></a>BASH and Curl installation</h2>
+<a id="bash-and-curl-installation" class="anchor" href="#bash-and-curl-installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>BASH and Curl installation</h2>
 
 <p><strong>Debian &amp; Ubuntu Linux:</strong></p>
 
-<div class="highlight highlight-bash"><pre>    sudo apt-get install bash <span class="o">(</span>Probably BASH is already installed on your system<span class="o">)</span>
-    sudo apt-get install curl
-</pre></div>
+<div class="highlight highlight-bash"><pre>    sudo apt-get install bash (Probably BASH is already installed on your system)
+    sudo apt-get install curl</pre></div>
 
 <p><strong>BSD:</strong></p>
 
-<div class="highlight highlight-bash"><pre>    <span class="nb">cd</span> /usr/ports/shells/bash <span class="o">&amp;&amp;</span> make install clean
-    <span class="nb">cd</span> /usr/ports/ftp/curl <span class="o">&amp;&amp;</span> make install clean
-</pre></div>
+<div class="highlight highlight-bash"><pre>    <span class="pl-s3">cd</span> /usr/ports/shells/bash <span class="pl-k">&amp;&amp;</span> make install clean
+    <span class="pl-s3">cd</span> /usr/ports/ftp/curl <span class="pl-k">&amp;&amp;</span> make install clean</pre></div>
 
 <p><strong>Cygwin:</strong><br>
 You need to install these packages:  </p>
@@ -468,7 +460,7 @@ You need to install these packages:  </p>
 </ul>
 
 <h2>
-<a name="dropshell" class="anchor" href="#dropshell"><span class="octicon octicon-link"></span></a>DropShell</h2>
+<a id="dropshell" class="anchor" href="#dropshell" aria-hidden="true"><span class="octicon octicon-link"></span></a>DropShell</h2>
 
 <p>DropShell is an interactive DropBox shell, based on DropBox Uploader:</p>
 
@@ -476,20 +468,19 @@ You need to install these packages:  </p>
 The Intractive Dropbox SHELL
 Andrea Fabrizi - andrea.fabrizi@gmail.com
 
-Type <span class="nb">help </span><span class="k">for</span> the list of the available commands.
+Type <span class="pl-s3">help</span> <span class="pl-k">for</span> <span class="pl-vo">the</span> list of the available commands.
 
-andrea@Dropbox:/<span class="nv">$ </span>ls
- <span class="o">[</span>D<span class="o">]</span> <span class="m">0</span>       Apps
- <span class="o">[</span>D<span class="o">]</span> <span class="m">0</span>       Camera Uploads
- <span class="o">[</span>D<span class="o">]</span> <span class="m">0</span>       Public
- <span class="o">[</span>D<span class="o">]</span> <span class="m">0</span>       scripts
- <span class="o">[</span>D<span class="o">]</span> <span class="m">0</span>       Security
- <span class="o">[</span>F<span class="o">]</span> <span class="m">105843</span>  notes.txt
-andrea@DropBox:/ServerBackup<span class="nv">$ </span>get notes.txt
-</pre></div>
+andrea@Dropbox:/$ ls
+ [D] 0       Apps
+ [D] 0       Camera Uploads
+ [D] 0       Public
+ [D] 0       scripts
+ [D] 0       Security
+ [F] 105843  notes.txt
+andrea@DropBox:/ServerBackup$ get notes.txt</pre></div>
 
 <h2>
-<a name="donations" class="anchor" href="#donations"><span class="octicon octicon-link"></span></a>Donations</h2>
+<a id="donations" class="anchor" href="#donations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Donations</h2>
 
 <p>If you want to support this project, please consider donating:</p>
 
@@ -504,7 +495,7 @@ andrea@DropBox:/ServerBackup<span class="nv">$ </span>get notes.txt
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
       <footer class="inner">
-        <p class="copyright">Dropbox Backup maintained by <a href="https://github.com/CubicApps">CubicApps</a></p>
+        <p class="copyright">Dropbox Backup maintained by <a href="https://github.com/ClickBeyond">ClickBeyond</a></p>
         <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
