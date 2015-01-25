@@ -26,10 +26,28 @@ $ ./dropbox_uploader.sh
 
 ## MySQL DB Backup Usage
 
-The syntax for backing up MySQL databases is:
+Make sure the MySQL Client is installed for your version of MySQL Server:
+```bash
+$ sudo apt-get update
+$ sudo apt-get install mysql-client-5.6	# replace 5.6 with your version of MySQL
+```
+
+Use the `mysql_config_editor` (new in v5.6.6) to store the database login credentials in an encrypted format:
+```bash
+$ mysql_config_editor set --login-path=loginPathName --host=hostname --user=username --password
+```
+Replace `loginPathName` with a custom name and replace `hostname` and `username` with your login credentials. You will be prompted to enter your password.
+
+Some useful `mysql_config_editor` commands are:
+```bash
+$ mysql_config_editor print --all	# to view the stored login credentials (passwords are displayed as *****)
+$ mysql_config_editor remove --login-path=loginPathName	# to remove a stored login
+```
+
+The `loginPathName` name is used when backing up MySQL databases. The syntax is:
 
 ```bash
-$ ~/DropboxBackup/db_backup.sh -u dbUsername -p dbPassword -h dbHost -d dbName
+$ ~/DropboxBackup/db_backup.sh -l loginPathName -d dbName
 ```
 
 This script will create a MySQL dump file, which is then compressed into a `.tar.gz` file and then uploaded to your dropbox folder.
@@ -71,7 +89,7 @@ $ crontab -e
 Providing your system is setup to send emails (see [Sending Email using Mandrill](#6)), then add these lines to your `crontab` file to email errors to the `MAILTO` address:
 ```
 MAILTO="<your@email.com>"
-@daily ~/DropboxBackup/db_backup.sh -u dbUsername -p dbPassword -h dbHost -d dbName > /dev/null
+@daily ~/DropboxBackup/db_backup.sh -l loginPathName -d dbName > /dev/null
 30 0 * * 1 ~/DropboxBackup/log_backup.sh > /dev/null
 ```
 
